@@ -58,15 +58,22 @@ class ForestFire {
         for (x in (-1 .. 1)) {
             for (y in (-1 .. 1)) {
                 if (isBurnable(map, i + x, j + y)) {
-                    if (nextInt(10) >= 3) {
-                        map[i+x][j+y] = FIRE
+                    if (burnTile(map, i + x, j + y, x, y))
                         burnt++
-                    }
                 }
             }
         }
         map[i][j] = BURNT
         return burnt
+    }
+
+    private fun burnTile(map: MutableList<MutableList<Int>>, mPos: Int, nPos: Int, mDir: Int, nDir: Int) : Boolean {
+        return if (nextInt(10) >= 3) {
+            map[mPos][nPos] = FIRE
+            true
+        } else {
+            false
+        }
     }
 
     private fun isBurnable(map: MutableList<MutableList<Int>>, i: Int, j: Int) : Boolean {
