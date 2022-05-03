@@ -1,5 +1,6 @@
+import model.Climate
+import model.Wind
 import java.io.FileNotFoundException
-import kotlin.random.Random
 import kotlin.random.Random.Default.nextInt
 
 class ForestFire {
@@ -7,7 +8,8 @@ class ForestFire {
     fun run(mPos: Int, nPos: Int) : Unit {
 
         val map = readMap()
-
+        val wind = Wind()
+        val climate = Climate()
 
         var randomMPos = nextInt(map.size)
         var randomNPos = nextInt(map[0].size)
@@ -18,7 +20,7 @@ class ForestFire {
         simulate_map(map, randomMPos, randomNPos)
     }
 
-    private fun simulate_map(map: MutableList<MutableList<Int>>, mPos: Int, nPos: Int) {
+    private fun simulate_map(map: MutableList<MutableList<Int>> wind: Wind, climate: Climate, mPos: Int, nPos: Int) {
         printMap(map)
         println()
         Thread.sleep(350)
@@ -39,15 +41,15 @@ class ForestFire {
 
     private fun burnMap(map: MutableList<MutableList<Int>>) : Int{
         var tilesBurnt = 0
-        var willBurn = mutableListOf<Array<Int>>()
+        val burnQueue = mutableListOf<Array<Int>>()
         for (i in (0 until map.size)) {
             for (j in (0 until map[i].size)) {
                 if (map[i][j] == FIRE)
-                    willBurn.add(arrayOf(i, j))
+                    burnQueue.add(arrayOf(i, j))
             }
         }
 
-        for (tile in willBurn) {
+        for (tile in burnQueue) {
             tilesBurnt += expandFire(map, tile[0], tile[1])
         }
         return tilesBurnt
