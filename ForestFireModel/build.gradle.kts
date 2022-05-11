@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.5.10"
-    application
+    kotlin("jvm") version "1.6.10"
+    id("org.jetbrains.compose") version "1.1.0"
 }
 
 group = "me.spste"
@@ -10,10 +10,13 @@ version = "1.0"
 
 repositories {
     mavenCentral()
+    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    google()
+
 }
 
 dependencies {
-    testImplementation(kotlin("test"))
+    implementation(compose.desktop.currentOs)
 }
 
 tasks.test {
@@ -24,6 +27,8 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
 }
 
-application {
-    mainClass.set("MainKt")
+compose.desktop {
+    application {
+        mainClass = "MainKt"
+    }
 }

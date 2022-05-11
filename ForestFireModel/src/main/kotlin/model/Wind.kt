@@ -8,47 +8,30 @@ import SOUTHDEGREES
 import SOUTHEASTDEGREES
 import SOUTHWESTDEGREES
 import WESTDEGREES
+import java.lang.Math.PI
 import kotlin.math.abs
+import kotlin.math.cos
 
-data class Wind(var speed: Float, var direction: Float) {
-    var n: Float = if (direction - NORTHDEGREES > 180) speed * direction else speed * direction - 180
-    var s: Float = if (direction - 180 > 180) speed * direction else speed * direction - 180
-    var w: Float = if (direction - 270 > 180) speed * direction else speed * direction - 180
-    var e: Float = if (direction - 0 > 180) speed * direction else speed * direction - 180
-    var nw: Float = if (direction - 0 > 180) speed * direction else speed * direction - 180
-    var ne: Float = if (direction - 0 > 180) speed * direction else speed * direction - 180
-    var sw: Float = if (direction - 0 > 180) speed * direction else speed * direction - 180
-    var se: Float = if (direction - 0 > 180) speed * direction else speed * direction - 180
-
-    fun getWindForceForDirection(speed: Float, originalDirection: Float, wantedDirection: WindDirection) {
-        var wantedDirectionValue: Float = 0f
-        when (wantedDirection) {
-            WindDirection.NORTH-> {
-                wantedDirectionValue = NORTHDEGREES.toFloat()
-            }
-            WindDirection.NORTHEAST-> {
-                wantedDirectionValue = NORTHEASTDEGREES.toFloat()
-            }
-            WindDirection.EAST-> {
-                wantedDirectionValue = EASTDEGREES.toFloat()
-            }
-            WindDirection.SOUTHEAST-> {
-                wantedDirectionValue = SOUTHEASTDEGREES.toFloat()
-            }
-            WindDirection.SOUTH-> {
-                wantedDirectionValue = SOUTHDEGREES.toFloat()
-            }
-            WindDirection.SOUTHWEST-> {
-                wantedDirectionValue = SOUTHWESTDEGREES.toFloat()
-            }
-            WindDirection.WEST-> {
-                wantedDirectionValue = WESTDEGREES.toFloat()
-            }
-            WindDirection.NORTHWEST-> {
-                wantedDirectionValue = NORTHWESTDEGREES.toFloat()
-            }
-        }
-    }
+data class Wind(
+    var n: Float = 0f,
+    var s: Float = 0f,
+    var w: Float = 0f,
+    var e: Float = 0f,
+    var nw: Float = 0f,
+    var ne: Float = 0f,
+    var sw: Float = 0f,
+    var se: Float = 0f
+)  {
+     constructor(speed: Float, direction: Float) : this (
+                n = calculateWindForceForDirection(speed, direction, WindDirection.NORTH),
+                s = calculateWindForceForDirection(speed, direction, WindDirection.SOUTH),
+                w = calculateWindForceForDirection(speed, direction, WindDirection.WEST),
+                e = calculateWindForceForDirection(speed, direction, WindDirection.EAST),
+                nw = calculateWindForceForDirection(speed, direction, WindDirection.NORTHWEST),
+                ne = calculateWindForceForDirection(speed, direction, WindDirection.NORTHEAST),
+                sw = calculateWindForceForDirection(speed, direction, WindDirection.SOUTHWEST),
+                se = calculateWindForceForDirection(speed, direction, WindDirection.SOUTHEAST)
+            )
 
     enum class WindDirection {
         NORTH,
@@ -60,6 +43,38 @@ data class Wind(var speed: Float, var direction: Float) {
         SOUTHEAST,
         SOUTHWEST
     }
+}
+
+fun calculateWindForceForDirection(speed: Float, originalDirection: Float, wantedDirection: Wind.WindDirection) : Float {
+    var wantedDirectionValue: Float = 0f
+    when (wantedDirection) {
+        Wind.WindDirection.NORTH-> {
+            wantedDirectionValue = NORTHDEGREES.toFloat()
+        }
+        Wind.WindDirection.NORTHEAST-> {
+            wantedDirectionValue = NORTHEASTDEGREES.toFloat()
+        }
+        Wind.WindDirection.EAST-> {
+            wantedDirectionValue = EASTDEGREES.toFloat()
+        }
+        Wind.WindDirection.SOUTHEAST-> {
+            wantedDirectionValue = SOUTHEASTDEGREES.toFloat()
+        }
+        Wind.WindDirection.SOUTH-> {
+            wantedDirectionValue = SOUTHDEGREES.toFloat()
+        }
+        Wind.WindDirection.SOUTHWEST-> {
+            wantedDirectionValue = SOUTHWESTDEGREES.toFloat()
+        }
+        Wind.WindDirection.WEST-> {
+            wantedDirectionValue = WESTDEGREES.toFloat()
+        }
+        Wind.WindDirection.NORTHWEST-> {
+            wantedDirectionValue = NORTHWESTDEGREES.toFloat()
+        }
+    }
+
+    return speed * cos(kotlin.math.PI/180 *(abs(wantedDirectionValue - originalDirection))).toFloat()
 }
 
 
