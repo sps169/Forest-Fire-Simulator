@@ -21,3 +21,31 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+.idea/
+
+ForestFireModel/build/
+
+ForestFireModel/.gradle/
+
+ForestFireModel/gradle/
+
+ForestFireModel/gradlew
+
+ForestFireModel/gradlew.bat
+
+MultiplatformUI/.gradle/
+
+MultiplatformUI/android/build/
+
+MultiplatformUI/common/build/
+
+MultiplatformUI/gradle/
+
+MultiplatformUI/gradle.properties
+
+MultiplatformUI/gradlew
+
+MultiplatformUI/gradlew.bat
+
+MultiplatformUI/settings.gradle.kts
