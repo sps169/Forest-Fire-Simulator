@@ -1,7 +1,7 @@
 package com.forestfiresimulatortfg.mapsStaticAPI
 
 import com.forestfiresimulatortfg.mapsStaticAPI.RetrofitClient.getClient
-import utils.getLocalProperty
+import me.spste.common.utils.getLocalProperty
 import okhttp3.ResponseBody
 
 object MapsService {

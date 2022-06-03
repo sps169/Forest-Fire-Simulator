@@ -29,9 +29,9 @@ fun AppPreview() {
 }
 
 @Composable
-fun App(image: ImageBitmap, map: MutableList<MutableList<Int>>, climate: Climate, wind: Wind, location: Location) {
+fun App(image: ImageBitmap, climate: Climate, wind: Wind, location: Location) {
     Column (modifier = Modifier.padding(10.dp)){
-        SimulationView(image, map = map, Modifier.border(border = BorderStroke(2.dp, Color.Black)).padding(10.dp).fillMaxWidth().fillMaxHeight(1/2f))
+//        SimulationView(image, Modifier.border(border = BorderStroke(2.dp, Color.Black)).padding(10.dp).fillMaxWidth().fillMaxHeight(1/2f))
         //todo switch parameters view with edit parameters view
         ParametersView(climate = climate, wind = wind, location = location, modifier = Modifier.fillMaxHeight(2/3f))
         PlayButton(modifier = Modifier.fillMaxWidth().fillMaxHeight(), onClick = {})

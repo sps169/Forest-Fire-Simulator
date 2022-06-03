@@ -16,15 +16,19 @@ import me.spste.common.model.Login
 import me.spste.common.model.Wind
 import me.spste.common.ui.*
 import okhttp3.ResponseBody
+import me.spste.common.utils.generateMapFromImage
 import java.io.*
 
 
 fun main() = application {
     if (mapCall()) {
+        val image = loadImageBitmap(File("temp/map.png").inputStream())
+        val map = generateMapFromImage(image)
+        val result = ForestFire(map).run()
         Window(onCloseRequest = ::exitApplication) {
             MaterialTheme {
                 Row(modifier = Modifier.fillMaxSize().padding(10.dp)){
-                    SimulationView(loadImageBitmap(File("temp/map.png").inputStream()),mutableListOf(mutableListOf(1)), Modifier.border(border = BorderStroke(2.dp, Color.Black)).padding(10.dp).fillMaxWidth(fraction = 3f/4f).fillMaxHeight())
+                    SimulationView(image, Modifier.border(border = BorderStroke(2.dp, Color.Black)).wrapContentWidth(align = Alignment.Start), result)
                     Column (
                         verticalArrangement = Arrangement.spacedBy(5.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -60,7 +64,7 @@ fun main() = application {
 
 
 fun mapCall(): Boolean {
-    val image = MapsService.getMap("Madrid,Spain")
+    val image = MapsService.getMap("37,-2")
     if (image != null) {
         return writeResponseBodyToDisk(image)
     }else {

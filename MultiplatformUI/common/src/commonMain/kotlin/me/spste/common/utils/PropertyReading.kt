@@ -1,4 +1,4 @@
-package utils
+package me.spste.common.utils
 
 import java.io.File
 
