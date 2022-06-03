@@ -49,3 +49,7 @@ MultiplatformUI/gradlew
 MultiplatformUI/gradlew.bat
 
 MultiplatformUI/settings.gradle.kts
+
+MultiplatformUI/local.properties
+
+MultiplatformUI/desktop/.gradle/
