@@ -53,3 +53,5 @@ MultiplatformUI/settings.gradle.kts
 MultiplatformUI/local.properties
 
 MultiplatformUI/desktop/.gradle/
+
+MultiplatformUI/desktop/build/
