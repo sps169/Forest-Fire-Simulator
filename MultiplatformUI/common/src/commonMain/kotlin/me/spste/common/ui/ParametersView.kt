@@ -69,7 +69,7 @@ fun TemperatureParameterView(temperature: Float) {
 
 @Composable
 fun LocationParameterView(location: Location) {
-    DefaultParameterView(location.toString(), "Location")
+    DefaultParameterView("${location.altitude}, ${location.latitude}", "Location")
 
 }
 

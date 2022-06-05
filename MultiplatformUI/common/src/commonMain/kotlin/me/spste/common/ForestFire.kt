@@ -1,92 +1,80 @@
 import me.spste.common.model.*
 import kotlin.random.Random.Default.nextFloat
-import kotlin.random.Random.Default.nextInt
-
 
 class ForestFire(
-    val map: MutableList<MutableList<Int>>,
-    val wind: Wind = Wind(speed = 36f, direction = SOUTHDEGREES),
-    val climate: Climate = Climate(temperature = 30f, humidity = 30f, precipitation = 0f, pressure = 933f)
+    val map: List<List<Int>>,
+    val wind: Wind = Wind(speed = 80f, direction = SOUTHEASTDEGREES),
+    val climate: Climate = Climate(temperature = 30f, humidity = 30f, precipitation = 0f, pressure = 933f),
+    var mPosInput : Int = -1,
+    var nPosInput : Int = -1
 ) {
-
+    private var newMap: MutableList<MutableList<Int>> = copyMap(map)
+    var result: SimulationResult? = null
     fun run(): SimulationResult {
-        var randomMPos = nextInt(map.size)
-        var randomNPos = nextInt(map[0].size)
-        while (!isBurnable(map, randomMPos, randomNPos)) {
-            randomMPos = nextInt(map.size)
-            randomNPos = nextInt(map[0].size)
-        }
-//        println(
-//            """
-//            Run variables:
-//                - Initial click:    ($randomMPos, $randomNPos)
-//                - North wind:       ${wind.n}
-//                - South wind:       ${wind.s}
-//                - East wind:        ${wind.e}
-//                - West wind:        ${wind.w}
-//                - North East wind:  ${wind.ne}
-//                - North West wind:  ${wind.nw}
-//                - South East wind:  ${wind.se}
-//                - South West wind:  ${wind.sw}
-//                - Temperature:      $temperature
-//                - Humidity:         $humidity
-//                - Precipitation:    $precipitation
-//                - Pressure:         $pressure
-//                - Radiation:        to do
-//        """.trimIndent()
-//        )
-        return simulate_map(map, wind, climate, randomMPos, randomNPos)
-    }
-
-    private fun simulate_map(map: List<List<Int>>, wind: Wind, climate: Climate, mPos: Int, nPos: Int) : SimulationResult{
         val mapUpdateList = mutableMapOf<Int,MapUpdate>()
-        val newMap = copyMap(map)
-        var order = 0
-        if (isInMap(newMap, mPos, nPos)) {
-            newMap[mPos][nPos] = FIRE
-            mapUpdateList[order] = MapUpdate(listOf(PixelUpdate(mPos, nPos, FIRE)))
-            order+=1
+        if (!(mPosInput == -1 && nPosInput == -1)) {
+            newMap = copyMap(map)
+            newMap[mPosInput][nPosInput] = FIRE
+            mapUpdateList[0] = MapUpdate(listOf(PixelUpdate(mPosInput, nPosInput, FIRE)))
+            var order = 1
+            var mapUpdate = burnMap()
+            while(mapUpdate.pixelUpdateList.isNotEmpty() || order == 1) {
+                mapUpdateList[order] = mapUpdate
+                order+=1
+                mapUpdate = burnMap()
+            }
         }
-        var mapUpdate = burnMap(newMap, wind, climate)
-        while(mapUpdate.pixelUpdateList.isNotEmpty()) {
-            mapUpdateList[order] = mapUpdate
-            order+=1
-            mapUpdate = burnMap(newMap, wind, climate)
-        }
-        return SimulationResult(map, newMap, mapUpdateList, wind, climate)
+        result = SimulationResult(map, newMap, mapUpdateList, wind, climate)
+        return result as SimulationResult
     }
 
-    private fun burnMap(map: MutableList<MutableList<Int>>, wind: Wind, climate: Climate): MapUpdate {
+    fun resetRun() : SimulationResult? {
+        result = null
+        return result
+    }
+
+    fun setInitialPixel(mPos: Int, nPos: Int) {
+        if (!(mPosInput == -1 && nPosInput == -1)) {
+            newMap[mPosInput][nPosInput] = map[mPosInput][nPosInput]
+        }
+        if (isInMap(mPos, nPos) && isBurnable(mPos, nPos)) {
+            mPosInput = mPos
+            nPosInput = nPos
+        }
+    }
+
+    private fun burnMap(): MapUpdate {
         val burnQueue = mutableListOf<Array<Int>>()
         val updatedPixels = mutableListOf<PixelUpdate>()
-        for (i in (0 until map.size)) {
-            for (j in (0 until map[i].size)) {
-                if (map[i][j] == FIRE)
+        for (i in (0 until newMap.size)) {
+            for (j in (0 until newMap[i].size)) {
+                if (newMap[i][j] == FIRE)
                     burnQueue.add(arrayOf(i, j))
             }
         }
         for (tile in burnQueue) {
-            updatedPixels.addAll(expandTileFire(map, wind, climate, tile[0], tile[1]))
+            updatedPixels.addAll(expandTileFire(tile[0], tile[1]))
         }
         return MapUpdate(updatedPixels)
     }
 
-    private fun expandTileFire(map: MutableList<MutableList<Int>>, wind: Wind, climate: Climate, i: Int, j: Int): List<PixelUpdate> {
+    private fun expandTileFire(i: Int, j: Int): List<PixelUpdate> {
         val listPixelUpdate = mutableListOf<PixelUpdate>()
-        for (y in (-1..1)) {
-            for (x in (-1..1)) {
-                if (isBurnable(map, i + y, j + x)) {
-                    if (burnTile(map, wind, climate, i + y, j + x, coordinatesToWindDirection(y, x)))
-                        listPixelUpdate.add(PixelUpdate(i + y, j + x, FIRE))
+        for (x in (-1..1)) {
+            for (y in (-1..1)) {
+                if (isBurnable(i + x, j + y)) {
+                    if (burnTile(i + x, j + y, coordinatesToWindDirection(x, y)))
+                        if (!(x == 0 && y == 0))
+                            listPixelUpdate.add(PixelUpdate(i + x, j + y, FIRE))
                 }
             }
         }
-        map[i][j] = BURNT
+        newMap[i][j] = BURNT
         listPixelUpdate.add(PixelUpdate(i, j, BURNT))
         return listPixelUpdate
     }
 
-    private fun coordinatesToWindDirection(y: Int, x: Int): Wind.WindDirection {
+    private fun coordinatesToWindDirection(x: Int, y: Int): Wind.WindDirection {
         if (x == -1) {
             if (y == -1) {
                 return Wind.WindDirection.NORTHWEST
@@ -124,16 +112,13 @@ class ForestFire(
     }
 
     private fun burnTile(
-        map: MutableList<MutableList<Int>>,
-        wind: Wind,
-        climate: Climate,
         mPos: Int,
         nPos: Int,
-        windDirection: Wind.WindDirection
+        fireDirection: Wind.WindDirection
     ): Boolean {
-        val chances = calculateBurnChances(wind, climate, windDirection)
+        val chances = calculateBurnChances(fireDirection)
         return if (nextFloat() <= chances) {
-            map[mPos][nPos] = FIRE
+            newMap[mPos][nPos] = FIRE
 //            println("Tile at ($mPos, $nPos) burnt with $chances chances\n")
             true
         } else {
@@ -141,7 +126,7 @@ class ForestFire(
         }
     }
 
-    private fun calculateBurnChances(wind: Wind, climate: Climate, windDirection: Wind.WindDirection): Float {
+    private fun calculateBurnChances(windDirection: Wind.WindDirection): Float {
         val windForce = when (windDirection) {
             Wind.WindDirection.NORTH -> wind.n
             Wind.WindDirection.SOUTH -> wind.s
@@ -164,14 +149,14 @@ class ForestFire(
         return windChances
     }
 
-    private fun isBurnable(map: List<List<Int>>, i: Int, j: Int): Boolean {
-        return if (isInMap(map, i, j))
-            map[i][j] == TREE
+    private fun isBurnable(i: Int, j: Int): Boolean {
+        return if (isInMap(i, j))
+            newMap[i][j] == TREE
         else
             false
     }
 
-    private fun isInMap(map: List<List<Int>>, i: Int, j: Int): Boolean {
+    private fun isInMap(i: Int, j: Int): Boolean {
         return i < map.size && j < map[0].size && i >= 0 && j >= 0
     }
 
@@ -188,4 +173,10 @@ class ForestFire(
         }
         return newMap
     }
+
+    override fun toString(): String {
+        return "ForestFire(map=$map, wind=$wind, climate=$climate, mPosInput=$mPosInput, nPosInput=$nPosInput, newMap=$newMap)"
+    }
+
+
 }
