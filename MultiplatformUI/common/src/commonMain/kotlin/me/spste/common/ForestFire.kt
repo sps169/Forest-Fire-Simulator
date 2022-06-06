@@ -3,8 +3,8 @@ import kotlin.random.Random.Default.nextFloat
 
 class ForestFire(
     val map: List<List<Int>>,
-    val wind: Wind = Wind(speed = 80f, direction = SOUTHEASTDEGREES),
-    val climate: Climate = Climate(temperature = 30f, humidity = 30f, precipitation = 0f, pressure = 933f),
+    val wind: Wind,
+    val climate: Climate,
     var mPosInput : Int = -1,
     var nPosInput : Int = -1
 ) {

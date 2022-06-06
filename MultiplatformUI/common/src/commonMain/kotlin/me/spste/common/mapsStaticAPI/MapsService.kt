@@ -1,28 +1,28 @@
 package me.spste.common.mapsStaticAPI
 
 import com.forestfiresimulatortfg.mapsStaticAPI.RetrofitClient.getClient
-import me.spste.common.utils.getLocalProperty
+import me.spste.common.utils.PropertiesHandler
 import okhttp3.ResponseBody
 
 const val DISPLAY_OPTION = 0
-const val ANALISIS_OPTION = 1
+const val ANALYSIS_OPTION = 1
 
-object MapsService {
+class MapsService(val propertyHandler: PropertiesHandler) {
     val mapsApi : MapsApi = getClient().create(MapsApi::class.java)
     val mapProps = "getMap.properties"
     fun getMap(location: String, option: Int): ResponseBody? {
         val queue = "staticmap?" +
-                "key=${getLocalProperty("api_key")}" +
+                "key=${propertyHandler.getLocalProperty("api_key", "local.properties")}" +
                 "&center=$location" +
-                "&zoom=${getLocalProperty("default_zoom", mapProps)} " +
-                "&format=${getLocalProperty("format", mapProps)}" +
-                "&maptype=${getLocalProperty("maptype", mapProps)}" +
-                "&size=${getLocalProperty("default_size", mapProps)}"
+                "&zoom=${propertyHandler.getLocalProperty("default_zoom", mapProps)} " +
+                "&format=${propertyHandler.getLocalProperty("format", mapProps)}" +
+                "&maptype=${propertyHandler.getLocalProperty("maptype", mapProps)}" +
+                "&size=${propertyHandler.getLocalProperty("default_size", mapProps)}"
         val style =
             if (option == DISPLAY_OPTION)
-                getLocalProperty("style_display", mapProps)
+                propertyHandler.getLocalProperty("style_display", mapProps)
             else
-                getLocalProperty("style_analysis", mapProps)
+                propertyHandler.getLocalProperty("style_analysis", mapProps)
 
         return mapsApi.getMap(queue + style).execute().body()
 

@@ -1,53 +1,48 @@
-import androidx.compose.runtime.rememberCoroutineScope
+
 import kotlinx.coroutines.*
-import kotlinx.coroutines.android.awaitFrame
 import me.spste.common.mapsStaticAPI.MapsService
+import me.spste.common.utils.PropertiesHandler
 import okhttp3.ResponseBody
 import java.io.*
-import java.nio.file.Files
 
 fun getResourceAsText(path: String): String? =
     object {}.javaClass.getResource(path)?.readText()
 
 
-fun mapCall(locationString: String): Boolean {
+fun mapCall(locationString: String, propertiesHandler: PropertiesHandler): Array<File?> {
     var styledMap: ResponseBody? = null
     var realMap: ResponseBody? = null
     var tasks = listOf<Deferred<Dispatchers>>()
+    var filesArray = arrayOf<File?>()
     runBlocking {
         withContext(coroutineContext) {
             async(Dispatchers.IO) {
-                styledMap = MapsService.getMap(locationString, 1)
+                styledMap = MapsService(propertiesHandler).getMap(locationString, 1)
                 if (styledMap != null) {
-                    writeResponseBodyToDisk(styledMap!!, "analysisMap")
+                    filesArray[0] = writeResponseBodyToDisk(styledMap!!, "analysisMap.png")
                 }
             }
             async(Dispatchers.IO) {
-                realMap = MapsService.getMap(locationString, 0)
+                realMap = MapsService(propertiesHandler).getMap(locationString, 0)
                 if (realMap != null) {
-                    writeResponseBodyToDisk(realMap!!, "displayMap")
+                    filesArray[1] = writeResponseBodyToDisk(realMap!!, "displayMap.png")
                 }
             }
         }
     }
-
-    return if (styledMap != null && realMap != null)
-        true
-    else
-    {
-        print("Error en las llamadas a la API de Maps")
-        false
-    }
+    return filesArray
 }
 
-fun writeResponseBodyToDisk(body: ResponseBody, fileName: String): Boolean {
+fun writeResponseBodyToDisk(body: ResponseBody, fileName: String): File? {
     return try {
-        val file = File("temp${File.separator}$fileName.png")
+        val dir = File("simulationMaps")
+        if (!dir.isDirectory)
+            dir.mkdir()
+        val file = File("${dir.path}${File.separator}$fileName")
         var inputStream: InputStream? = null
         var outputStream: OutputStream? = null
         try {
             val fileReader = ByteArray(4096)
-            val fileSize = body.contentLength()
             var fileSizeDownloaded: Long = 0
             inputStream = body.byteStream()
             outputStream = FileOutputStream(file)
@@ -60,16 +55,16 @@ fun writeResponseBodyToDisk(body: ResponseBody, fileName: String): Boolean {
                 fileSizeDownloaded += read.toLong()
             }
             outputStream.flush()
-            true
+            file
         } catch (e: IOException) {
             e.printStackTrace()
-            false
+            file
         } finally {
             inputStream?.close()
             outputStream?.close()
         }
     } catch (e: IOException) {
         e.printStackTrace()
-        false
+        null
     }
 }

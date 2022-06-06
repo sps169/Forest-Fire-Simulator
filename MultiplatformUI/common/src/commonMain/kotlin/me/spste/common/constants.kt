@@ -1,5 +1,7 @@
 import androidx.compose.ui.graphics.Color
 
+val ANALYSIS_FILE = 0
+val DISPLAY_FILE = 1
 val FIRE = 1
 val BURNT = 0
 val WATER = 2
