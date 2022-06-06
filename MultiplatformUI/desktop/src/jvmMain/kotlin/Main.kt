@@ -30,7 +30,7 @@ import java.io.*
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() = application {
-    var locationString : String = "37,-2"
+    var locationString : String = "Calle+Puebla+de+Sanabria+23,Madrid"
     if (mapCall(locationString)) {
         val analysisImage = loadImageBitmap(File("temp/analysisMap.png").inputStream())
         val displayImage = loadImageBitmap(File("temp/displayMap.png").inputStream())
@@ -56,9 +56,10 @@ fun main() = application {
                             .onSizeChanged { simulationWindowSize = it }
                             .onPointerEvent(PointerEventType.Press) {
                                 run.setInitialPixel(
-                                    (it.changes.first().position.x *map.size / simulationWindowSize.height ).toInt(),
-                                    (it.changes.first().position.y *map[0].size / simulationWindowSize.width ).toInt()
+                                    (it.changes.first().position.x *map.size / simulationWindowSize.height).toInt(),
+                                    (it.changes.first().position.y *map[0].size / simulationWindowSize.width).toInt()
                                 )
+                                print("${simulationWindowSize}")
                                 hasClick = true
                                 animationScope.launch {
                                     variationIndex.snapTo(0f)

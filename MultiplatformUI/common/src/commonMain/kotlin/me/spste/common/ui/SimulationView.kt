@@ -65,11 +65,11 @@ fun SimulationView(
 
 @Composable
 fun Fire(imageBitmap: ImageBitmap, simulation: ForestFire, variationIndex: Int, size: IntSize) {
-    var ratioHeight = size.height.toFloat() / imageBitmap.height
-    var ratioWidth = size.width.toFloat() / imageBitmap.width
+    val ratioHeight = size.height.toFloat() / imageBitmap.height.toFloat()
+    val ratioWidth = size.width.toFloat() / imageBitmap.width.toFloat()
     Canvas(
         Modifier.aspectRatio(1f, true)
-            .requiredSize((imageBitmap.width * ratioWidth).dp, (imageBitmap.height * ratioHeight).dp)
+//            .requiredSize((imageBitmap.width * ratioWidth).dp, (imageBitmap.height * ratioHeight).dp)
             .border(border = BorderStroke(2.dp, Color.Black))
     ) {
         drawLine(

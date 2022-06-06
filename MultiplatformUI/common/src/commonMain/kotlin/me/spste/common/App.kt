@@ -23,17 +23,18 @@ import mapCall
 import me.spste.common.model.Location
 import me.spste.common.model.Login
 import me.spste.common.ui.*
+import me.spste.common.utils.PropertiesHandler
 import me.spste.common.utils.generateMapFromImage
 import java.io.File
 import java.io.FileInputStream
 
 @Composable
-fun App(loadImageBitmap: (fileLocation: String) -> ImageBitmap) {
+fun App(loadImageBitmap: (fileLocation: String) -> ImageBitmap, propertiesHandler: PropertiesHandler) {
     var locationString = "37,-2"
     if (mapCall(locationString)) {
         val analysisImage = loadImageBitmap("temp${File.separator}analysisMap.png")
         val displayImage = loadImageBitmap("temp${File.separator}displayMap.png")
-        val map = generateMapFromImage(analysisImage)
+        val map = generateMapFromImage(analysisImage, propertiesHandler)
         val run = ForestFire(map)
         var result by remember { mutableStateOf(run.result) }
         val coroutineScope = rememberCoroutineScope()
