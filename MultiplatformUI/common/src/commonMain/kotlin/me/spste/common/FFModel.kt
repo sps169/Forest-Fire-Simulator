@@ -3,6 +3,7 @@ package me.spste.common
 import ForestFire
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
@@ -19,9 +20,28 @@ class FFModel(
     var run: ForestFire? = null
     var animationIndex = Animatable(0f)
 
+    fun cleanModel(cantRestartWindow: () -> Unit): Boolean {
+        if (!animationIndex.isRunning) {
+            run?.resetRun()
+            resetAnimationIndex()
+            return true
+        }else {
+            cantRestartWindow
+            return false
+        }
+    }
+
     fun run() {
         run = builder.build()
         run!!.run()
+    }
+
+    fun canRun (): Boolean {
+        return builder.canRun()
+    }
+
+    fun needsClick(): Boolean {
+        return builder.needsClick()
     }
 
     fun withWind(wind: Wind): FFModel {
@@ -50,8 +70,8 @@ class FFModel(
         builder.withPosInput(mPosInput, nPosInput)
     }
 
-    fun getInitialClick(): IntArray {
-        return intArrayOf(builder.mPosInput, builder.nPosInput)
+    fun getInitialClick(): Offset {
+        return Offset(builder.mPosInput.toFloat(), builder.nPosInput.toFloat())
     }
 
     fun resetAnimationIndex() {
@@ -65,7 +85,7 @@ class FFModel(
     suspend fun playAnimation() {
         run?.result?.let {
             coroutineScope {
-                animationIndex.animateTo(it.variation.size.toFloat(), animationSpec = tween(it.variation.size * 100))
+                animationIndex.animateTo(it.variation.size.toFloat(), animationSpec = tween((it.variation.size * 50 * 50/run!!.wind.speed).toInt()))
             }
         }
     }

@@ -24,6 +24,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -65,7 +69,8 @@ fun Fire(imageBitmap: ImageBitmap, simulation: ForestFire?, variationIndex: Int,
     Canvas(
         Modifier.aspectRatio(1f, true)
     ) {
-        if ((click != null) && (click.x != -1f) && (click.y != -1f)){
+
+        if ((click != null) && (click.x != -1f) && (click.y != -1f)) {
             drawLine(
                 FIRE_COLOR,
                 Offset(
@@ -74,8 +79,9 @@ fun Fire(imageBitmap: ImageBitmap, simulation: ForestFire?, variationIndex: Int,
                 ),
                 Offset(
                     (click.x + 1) * ratioHeight,
-                    (click.x + 1) * ratioWidth
-                )
+                    (click.y + 1) * ratioWidth
+                ),
+                5f
             )
         }
         if (simulation != null) {
@@ -105,5 +111,6 @@ fun Fire(imageBitmap: ImageBitmap, simulation: ForestFire?, variationIndex: Int,
                 }
             }
         }
+
     }
 }
