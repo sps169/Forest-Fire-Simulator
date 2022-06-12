@@ -91,7 +91,7 @@ class FFModel(
     }
 
     override fun toString(): String {
-        return "FFModel(analysisImage=$analysisImage, propertiesHandler=$propertiesHandler, builder=$builder, run=$run, animationIndex=$animationIndex)"
+        return "FFModel(analysisImage=$analysisImage, propertiesHandler=$propertiesHandler, builder=$builder, run=${run.toString()}, animationIndex=$animationIndex)"
     }
 
 

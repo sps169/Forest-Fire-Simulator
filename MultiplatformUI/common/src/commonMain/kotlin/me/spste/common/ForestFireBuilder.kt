@@ -8,7 +8,7 @@ import me.spste.common.model.Wind
 class ForestFireBuilder {
     var map: List<List<Int>>? = null
     var wind: Wind?= Wind(speed = 90f, direction = SOUTHEASTDEGREES)
-    var climate: Climate? = Climate(temperature = 30f, humidity = 30f, precipitation = 0f, pressure = 933f)
+    var climate: Climate? = Climate(temperature = 30f, /*humidity = 30f, */precipitation = 0f/*, pressure = 933f*/)
     var mPosInput : Int = -1
     var nPosInput : Int = -1
 
@@ -77,5 +77,10 @@ class ForestFireBuilder {
         this.nPosInput = nPosInput
         return this
     }
+
+    override fun toString(): String {
+        return "ForestFireBuilder(map=${map?.size}, wind=$wind, climate=$climate, mPosInput=$mPosInput, nPosInput=$nPosInput)"
+    }
+
 
 }

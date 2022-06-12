@@ -175,7 +175,7 @@ class ForestFire(
     }
 
     override fun toString(): String {
-        return "ForestFire(map=$map, wind=$wind, climate=$climate, mPosInput=$mPosInput, nPosInput=$nPosInput, newMap=$newMap)"
+        return "ForestFire(map=${map.size}, wind=$wind, climate=$climate, mPosInput=$mPosInput, nPosInput=$nPosInput, newMap=$newMap)"
     }
 
 
