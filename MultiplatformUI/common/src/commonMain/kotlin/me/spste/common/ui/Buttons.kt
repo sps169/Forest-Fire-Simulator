@@ -23,7 +23,7 @@ fun CustomParametersButton(onClick: () -> Unit, modifier: Modifier) {
         onClick = onClick,
         modifier = modifier
     ) {
-        Text("Custom parameters")
+        Text("Customize parameters")
     }
 }
 

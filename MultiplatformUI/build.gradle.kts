@@ -9,7 +9,6 @@ buildscript {
         classpath("com.android.tools.build:gradle:7.0.0")
         classpath ("com.google.maps.android:maps-compose:1.0.0")
         classpath ("com.google.android.gms:play-services-maps:18.0.2")
-
     }
 }
 

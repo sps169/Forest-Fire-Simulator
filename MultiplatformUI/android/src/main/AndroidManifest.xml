@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="me.spste.android">
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.NETWORK_PROVIDER"/>
     <application
             android:allowBackup="false"
             android:supportsRtl="true"
@@ -12,9 +13,5 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <meta-data
-                android:name="com.google.android.geo.API_KEY"
-                android:value="AIzaSyAHZqYWiw39yiL-BYwOFRPu3zK-zsfy16Y" />
-
     </application>
 </manifest>

@@ -1,32 +1,30 @@
-package com.forestfiresimulatortfg.mapsStaticAPI
+package me.spste.common.mapsStaticAPI
 
 import com.forestfiresimulatortfg.mapsStaticAPI.RetrofitClient.getClient
-import utils.getLocalProperty
+import me.spste.common.utils.PropertiesHandler
 import okhttp3.ResponseBody
 
-object MapsService {
+const val DISPLAY_OPTION = 0
+const val ANALYSIS_OPTION = 1
+
+class MapsService(val propertyHandler: PropertiesHandler) {
     val mapsApi : MapsApi = getClient().create(MapsApi::class.java)
     val mapProps = "getMap.properties"
+    fun getMap(location: String, option: Int): ResponseBody? {
+        val queue = "staticmap?" +
+                "key=${propertyHandler.getLocalProperty("api_key", "local.properties")}" +
+                "&center=$location" +
+                "&zoom=${propertyHandler.getLocalProperty("default_zoom", mapProps)} " +
+                "&format=${propertyHandler.getLocalProperty("format", mapProps)}" +
+                "&maptype=${propertyHandler.getLocalProperty("maptype", mapProps)}" +
+                "&size=${propertyHandler.getLocalProperty("default_size", mapProps)}"
+        val style =
+            if (option == DISPLAY_OPTION)
+                propertyHandler.getLocalProperty("style_display", mapProps)
+            else
+                propertyHandler.getLocalProperty("style_analysis", mapProps)
 
-    fun getMap(location: String): ResponseBody? {
-        val response = mapsApi.getMap(
-            "staticmap?" +
-                    "key=${getLocalProperty("api_key")}"
-                    + "&center=$location" +
-                    "&zoom=${getLocalProperty("default_zoom", mapProps)}" +
-                    "&format=${getLocalProperty("format", mapProps)}" +
-                    "&maptype=${getLocalProperty("maptype", mapProps)}" +
-                    "&size=${getLocalProperty("default_size", mapProps)}" +
-                    "&style=element:labels%7Cvisibility:off" +
-                    "&style=feature:administrative%7Cvisibility:off" +
-                    "&style=feature:landscape%7Celement:geometry%7Ccolor:0x2fa745" +
-                    "&style=feature:poi%7Cvisibility:off" +
-                    "&style=feature:road%7Ccolor:0xffed4d%7Cweight:0.5" +
-                    "&style=feature:transit%7Ccolor:0xffed4d" +
-                    "&style=feature:transit.line%7Cvisibility:off" +
-                    "&style=feature:water%7Celement:geometry%7Ccolor:0x5eb3e8"
-        ).execute()
-        return response.body()
+        return mapsApi.getMap(queue + style).execute().body()
 
     }
 }

@@ -1,4 +1,4 @@
-package com.forestfiresimulatortfg.mapsStaticAPI
+package me.spste.common.mapsStaticAPI
 
 import okhttp3.ResponseBody
 import retrofit2.Call
