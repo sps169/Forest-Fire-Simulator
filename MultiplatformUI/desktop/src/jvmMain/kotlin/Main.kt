@@ -73,7 +73,6 @@ fun main() = application {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun App(model: FFModel, displayImage: ImageBitmap) {
-    print("app recomposed\n")
     Row(modifier = Modifier.wrapContentSize(Alignment.TopCenter)) {
         val defaultSize = IntSize(
             DesktopPropertyHandler.getLocalProperty("default_x_size", "getMap.properties").toInt(),

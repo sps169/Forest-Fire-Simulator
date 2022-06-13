@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
@@ -12,8 +11,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import me.spste.common.ForestFireBuilder
 
-import me.spste.common.model.Climate
-import me.spste.common.model.Location
 import me.spste.common.model.Wind
 import me.spste.common.utils.ImageLoader
 
@@ -93,7 +90,7 @@ fun DefaultParameterView(
 @Composable
 fun RainfallParameterView(precipitation: Float?, loader: ImageLoader, onChange: (Float) -> Unit, editable: Boolean) {
     DefaultParameterView(
-        precipitation, 0f, 100f, 0, "Rain", loader.loadImage("location_icon.png"), onChange, editable
+        precipitation, 0f, 100f, 0, "Rain: ", loader.loadImage("rain.png"), onChange, editable
     )
 }
 
@@ -101,7 +98,7 @@ fun RainfallParameterView(precipitation: Float?, loader: ImageLoader, onChange: 
 fun TemperatureParameterView(temperature: Float?, loader: ImageLoader, onChange: (Float) -> Unit, editable: Boolean) {
 
     DefaultParameterView(
-        temperature, -100f, 100f, 0, "Temperature", loader.loadImage("location_icon.png"), onChange, editable
+        temperature, -100f, 100f, 0, "Temperature: ", loader.loadImage("temperature.png"), onChange, editable
     )
 }
 
@@ -113,16 +110,17 @@ fun WindParameterView(
     onDirectionChange: (Float) -> Unit,
     editable: Boolean
 ) {
-    val image = loader.loadImage("location_icon.png")
+    val windforce = loader.loadImage("windforce.png")
+    val winddirection = loader.loadImage("winddirection.png")
     DefaultParameterView(
-        wind?.speed, 0f, 150f, 0, "Wind Force", image , onValueChange, editable
+        wind?.speed, 0f, 150f, 0, "Wind Force: ", windforce , onValueChange, editable
     )
 
     Row() {
-        if (image != null) {
+        if (winddirection != null) {
             Image(
-                bitmap = image,
-                contentDescription = "Wind Description",
+                bitmap = winddirection,
+                contentDescription = "Wind Direction",
                 modifier = Modifier.size(25.dp).aspectRatio(1f).padding(end = 5.dp)
             )
         }

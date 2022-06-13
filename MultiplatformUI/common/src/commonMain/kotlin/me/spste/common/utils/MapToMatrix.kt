@@ -8,12 +8,8 @@ import androidx.compose.ui.graphics.toPixelMap
 
 
 fun generateMapFromImage(img: ImageBitmap, propHandler: PropertiesHandler) : MutableList<MutableList<Int>> {
-    val valuesMap = mutableMapOf<Int, FloatArray>()
     val pixelMap = img.toPixelMap()
     val intMap = mutableListOf<MutableList<Int>>()
-    val waterValue = propHandler.getLocalProperty("water", "simulation.properties")
-    val roadValue = propHandler.getLocalProperty("road", "simulation.properties")
-    val greenValue = propHandler.getLocalProperty("green", "simulation.properties")
     for(i in 0 until img.width) {
         intMap.add(mutableListOf())
         for (j in 0 until img.height) {
