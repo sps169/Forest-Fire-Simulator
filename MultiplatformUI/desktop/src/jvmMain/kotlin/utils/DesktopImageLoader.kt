@@ -8,10 +8,10 @@ object DesktopImageLoader : ImageLoader(DesktopPropertyHandler,
     streamToImageBitmap = {
         loadImageBitmap(it)
     },
-    stringToFile = {
-        val resource = DesktopImageLoader.javaClass.classLoader.getResource(it)
+    stringToStream = {
+        val resource = DesktopImageLoader.javaClass.classLoader.getResourceAsStream(it)
         if (resource != null)
-            File(resource.toURI())
+            resource
         else {
             print("File $it not found in resources")
             null

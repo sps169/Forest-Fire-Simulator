@@ -7,10 +7,9 @@ import java.io.File
 object DesktopPropertyHandler : PropertiesHandler {
     override fun getLocalProperty(key: String, filename: String): String {
         val properties = java.util.Properties()
-
-        val localProperties = File(filename)
-        if (localProperties.isFile) {
-            java.io.InputStreamReader(java.io.FileInputStream(localProperties), Charsets.UTF_8).use { reader ->
+        val resource = DesktopPropertyHandler.javaClass.classLoader.getResourceAsStream(filename)
+        if (resource != null) {
+            java.io.InputStreamReader(resource, Charsets.UTF_8).use { reader ->
                 properties.load(reader)
             }
         } else error("File $filename not found")

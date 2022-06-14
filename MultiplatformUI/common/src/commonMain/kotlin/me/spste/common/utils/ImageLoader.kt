@@ -8,7 +8,7 @@ import java.io.File
 import java.io.InputStream
 
 
-open class ImageLoader(private val propertyHandler: PropertiesHandler, val streamToImageBitmap: (InputStream) -> ImageBitmap?, val stringToFile: (String) -> File?) {
+open class ImageLoader(private val propertyHandler: PropertiesHandler, val streamToImageBitmap: (InputStream) -> ImageBitmap?, val stringToStream: (String) -> InputStream?) {
     fun callMapImages(locationString: String): List<ImageBitmap?> {
         val analysisImage = loadAnalysisMapImage(locationString)
         val displayImage = loadDisplayMapImage(locationString)
@@ -30,9 +30,9 @@ open class ImageLoader(private val propertyHandler: PropertiesHandler, val strea
     }
 
     fun loadImage(fileName: String): ImageBitmap? {
-        val file = stringToFile(fileName)
-        return if (file != null)
-            streamToImageBitmap(file.inputStream())
+        val stream = stringToStream(fileName)
+        return if (stream != null)
+            streamToImageBitmap(stream)
         else null
 
     }

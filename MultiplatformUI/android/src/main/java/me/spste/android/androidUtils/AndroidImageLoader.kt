@@ -10,10 +10,10 @@ object AndroidImageLoader : ImageLoader(
     streamToImageBitmap = {
         BitmapFactory.decodeStream(it).asImageBitmap()
     },
-    stringToFile = {
-        val resource = AndroidImageLoader.javaClass.classLoader.getResource(it)
+    stringToStream = {
+        val resource = AndroidImageLoader.javaClass.classLoader.getResourceAsStream(it)
         if (resource != null)
-            File(resource.toURI())
+            resource
         else {
             print("File $it not found in resources")
             null
